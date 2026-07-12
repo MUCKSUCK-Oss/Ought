@@ -94,10 +94,9 @@ function renderHome() {
       <button class="edit-card-btn" title="Edit Workspace">✎</button>
     `;
 
-    // Clicking the card launches it
+    
     card.onclick = () => launchWorkspace(ws);
     
-    // Clicking the edit button stops the launch and opens settings
     const editBtn = card.querySelector('.edit-card-btn');
     editBtn.onclick = (e) => {
       e.stopPropagation(); 
@@ -148,8 +147,6 @@ function openUrls(urls) {
   });
 }
 
-// --- DYNAMIC URL INPUT LOGIC ---
-
 function addUrlInput(value = '') {
   const container = document.getElementById('url-container');
   const row = document.createElement('div');
@@ -169,7 +166,6 @@ document.getElementById('capture-tabs-btn').onclick = async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   const currentTabUrls = tabs.map(t => t.url).filter(u => u && !u.startsWith('chrome://'));
   
-  // Get currently typed URLs to avoid duplicates
   const existingInputs = Array.from(document.querySelectorAll('.url-input')).map(inp => inp.value.trim());
   
   currentTabUrls.forEach(url => {
@@ -185,11 +181,11 @@ function openEditScreen(index) {
   
   document.getElementById('ws-name').value = ws.name;
   
-  // Render Dynamic URL inputs
   const urlContainer = document.getElementById('url-container');
   urlContainer.innerHTML = ''; 
   if (ws.urls.length === 0) {
-    addUrlInput(''); // Provide at least one empty box
+    addUrlInput(''); 
+
   } else {
     ws.urls.forEach(url => addUrlInput(url));
   }
@@ -204,7 +200,6 @@ document.getElementById('add-btn').onclick = () => {
   editingIndex = -1;
   document.getElementById('ws-name').value = '';
   
-  // Reset Dynamic URL inputs
   const urlContainer = document.getElementById('url-container');
   urlContainer.innerHTML = '';
   addUrlInput(''); 
@@ -218,7 +213,7 @@ document.getElementById('add-btn').onclick = () => {
 document.getElementById('back-btn').onclick = () => switchView('home-view');
 
 document.getElementById('save-ws-btn').onclick = () => {
-  // Scrape all the dynamically generated inputs
+
   const urlInputs = document.querySelectorAll('.url-input');
   const scrapedUrls = Array.from(urlInputs).map(inp => inp.value.trim()).filter(Boolean);
 
