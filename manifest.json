@@ -13,5 +13,13 @@
       "js": ["youtube-tracker.js"],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "browser_specific_settings": {
+  "gecko": {
+    "id": "ought-tabs-project@example.com",
+    "data_collection_permissions": {
+  "required": ["none"]
+}
+  }
+}
 }
