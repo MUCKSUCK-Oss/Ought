@@ -1,35 +1,61 @@
 let workspaces = [];
 let editingIndex = -1; 
-let isEditMode = false; // Toggles between launching and editing
+let isDarkMode = false;
 
-// Load Data
+const quotes = [
+  "\"Your results are the product of either personal focus or personal distractions.\" - Darren Hardy",
+  "\"An addiction to distraction is the end of your creative production.\" - Robin Sharma",
+  "\"Say 'no' to distraction so you can say 'yes' to your destiny.\" - Anonymous",
+  "\"Focus on being productive instead of busy.\" - Tim Ferriss",
+  "\"Starve your distractions, feed your focus.\" - Anonymous"
+];
+
 async function loadData() {
-  const data = await chrome.storage.local.get(['workspaces']);
+  const data = await chrome.storage.local.get(['workspaces', 'isDarkMode']);
+  
+  if (data.isDarkMode !== undefined) {
+    isDarkMode = data.isDarkMode;
+    applyTheme();
+  }
+
   if (data.workspaces && data.workspaces.length > 0) {
     workspaces = data.workspaces;
   } else {
-    // Exact defaults from your mockup
     workspaces = [
       { name: "Code", urls: ["https://github.com", "https://stackoverflow.com"], isEntertainment: false },
-      { name: "Study", urls: ["https://notion.so", "https://docs.google.com"], isEntertainment: false },
-      { name: "Entertainment", urls: ["https://youtube.com", "https://netflix.com"], isEntertainment: true },
-      { name: "Design", urls: ["https://figma.com", "https://dribbble.com"], isEntertainment: false }
+      { name: "Entertainment", urls: ["https://youtube.com"], isEntertainment: true }
     ];
   }
   renderHome();
 }
 
 async function saveData() {
-  await chrome.storage.local.set({ workspaces });
+  await chrome.storage.local.set({ workspaces, isDarkMode });
   renderHome();
 }
+
+function applyTheme() {
+  const themeBtn = document.getElementById('theme-btn');
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    themeBtn.textContent = '☀️';
+  } else {
+    document.body.classList.remove('dark-mode');
+    themeBtn.textContent = '🌙';
+  }
+}
+
+document.getElementById('theme-btn').onclick = () => {
+  isDarkMode = !isDarkMode;
+  applyTheme();
+  chrome.storage.local.set({ isDarkMode });
+};
 
 function switchView(viewId) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
 }
 
-// Helpers for the UI
 function getDomainString(urls) {
   if (!urls || urls.length === 0) return "No links added";
   return urls.map(url => {
@@ -47,7 +73,6 @@ function getIconStyles(name) {
   return { class: 'icon-default', char: '📁' };
 }
 
-// Render the Main List
 function renderHome() {
   const list = document.getElementById('workspace-list');
   list.innerHTML = '';
@@ -57,7 +82,6 @@ function renderHome() {
     const badgeClass = ws.isEntertainment ? 'badge-ent' : 'badge-work';
     const badgeText = ws.isEntertainment ? 'Entertain' : 'Work';
     
-    // Create Card
     const card = document.createElement('div');
     card.className = 'ws-card';
     card.innerHTML = `
@@ -67,31 +91,31 @@ function renderHome() {
         <div class="ws-sub">${getDomainString(ws.urls)}</div>
       </div>
       <div class="ws-badge ${badgeClass}">${badgeText}</div>
-      <div class="ws-arrow">${isEditMode ? '✎' : '〉'}</div>
+      <button class="edit-card-btn" title="Edit Workspace">✎</button>
     `;
 
-    card.onclick = () => {
-      if (isEditMode) openEditScreen(index);
-      else launchWorkspace(ws);
+    // Clicking the card launches it
+    card.onclick = () => launchWorkspace(ws);
+    
+    // Clicking the edit button stops the launch and opens settings
+    const editBtn = card.querySelector('.edit-card-btn');
+    editBtn.onclick = (e) => {
+      e.stopPropagation(); 
+      openEditScreen(index);
     };
 
     list.appendChild(card);
   });
 }
 
-// Toggle Edit Mode
-document.getElementById('edit-mode-btn').onclick = (e) => {
-  isEditMode = !isEditMode;
-  e.target.style.color = isEditMode ? 'var(--primary)' : 'var(--text-light)';
-  renderHome();
-};
-
-// Launch Logic
 function launchWorkspace(ws) {
   if (!ws.urls || ws.urls.length === 0) return;
 
   if (ws.isEntertainment) {
     switchView('friction-view');
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('quote-text').textContent = randomQuote;
+
     let sec = 10;
     const timerEl = document.getElementById('timer-text');
     timerEl.textContent = `Launching in ${sec} seconds`;
@@ -124,24 +148,67 @@ function openUrls(urls) {
   });
 }
 
-// Open Edit Form
+// --- DYNAMIC URL INPUT LOGIC ---
+
+function addUrlInput(value = '') {
+  const container = document.getElementById('url-container');
+  const row = document.createElement('div');
+  row.className = 'url-row';
+  row.innerHTML = `
+    <input type="text" class="url-input" placeholder="https://..." value="${value}">
+    <button class="remove-url-btn" title="Remove Link">✖</button>
+  `;
+  
+  row.querySelector('.remove-url-btn').onclick = () => row.remove();
+  container.appendChild(row);
+}
+
+document.getElementById('add-url-btn').onclick = () => addUrlInput('');
+
+document.getElementById('capture-tabs-btn').onclick = async () => {
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const currentTabUrls = tabs.map(t => t.url).filter(u => u && !u.startsWith('chrome://'));
+  
+  // Get currently typed URLs to avoid duplicates
+  const existingInputs = Array.from(document.querySelectorAll('.url-input')).map(inp => inp.value.trim());
+  
+  currentTabUrls.forEach(url => {
+    if (!existingInputs.includes(url)) {
+      addUrlInput(url);
+    }
+  });
+};
+
 function openEditScreen(index) {
   editingIndex = index;
   const ws = workspaces[index];
   
   document.getElementById('ws-name').value = ws.name;
-  document.getElementById('ws-urls').value = ws.urls.join('\n');
+  
+  // Render Dynamic URL inputs
+  const urlContainer = document.getElementById('url-container');
+  urlContainer.innerHTML = ''; 
+  if (ws.urls.length === 0) {
+    addUrlInput(''); // Provide at least one empty box
+  } else {
+    ws.urls.forEach(url => addUrlInput(url));
+  }
+
   document.getElementById('ws-entertainment').checked = ws.isEntertainment;
   document.getElementById('delete-ws-btn').style.display = 'block'; 
   
   switchView('edit-view');
 }
 
-// Add New Workspace
 document.getElementById('add-btn').onclick = () => {
   editingIndex = -1;
   document.getElementById('ws-name').value = '';
-  document.getElementById('ws-urls').value = '';
+  
+  // Reset Dynamic URL inputs
+  const urlContainer = document.getElementById('url-container');
+  urlContainer.innerHTML = '';
+  addUrlInput(''); 
+
   document.getElementById('ws-entertainment').checked = false;
   document.getElementById('delete-ws-btn').style.display = 'none'; 
   
@@ -150,11 +217,14 @@ document.getElementById('add-btn').onclick = () => {
 
 document.getElementById('back-btn').onclick = () => switchView('home-view');
 
-// Save & Delete
 document.getElementById('save-ws-btn').onclick = () => {
+  // Scrape all the dynamically generated inputs
+  const urlInputs = document.querySelectorAll('.url-input');
+  const scrapedUrls = Array.from(urlInputs).map(inp => inp.value.trim()).filter(Boolean);
+
   const newWs = {
     name: document.getElementById('ws-name').value || 'New Workspace',
-    urls: document.getElementById('ws-urls').value.split('\n').map(s => s.trim()).filter(Boolean),
+    urls: scrapedUrls,
     isEntertainment: document.getElementById('ws-entertainment').checked
   };
 
