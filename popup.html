@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <!-- Main Menu View -->
+  <div id="home-view" class="view active">
+    <div class="header">
+      <div class="brand">
+        <h1>Ought</h1>
+      </div>
+      <button id="edit-mode-btn" class="icon-btn" title="Toggle Edit Mode">⚙️</button>
+    </div>
+
+    <button id="add-btn" class="primary-btn">＋ New Workspace</button>
+
+    <div id="workspace-list" class="workspace-list">
+      <!-- Cards injected by JS -->
+    </div>
+    
+    <!-- Footer (Matching your mockup) -->
+    <div class="footer">
+      <div class="footer-divider"></div>
+      <p class="footer-text">Launchpad helps you build better habits.</p>
+    </div>
+  </div>
+
+  <!-- Edit/Add Workspace View -->
+  <div id="edit-view" class="view">
+    <div class="header">
+      <button id="back-btn" class="icon-btn">←</button>
+      <h2>Workspace Settings</h2>
+    </div>
+    
+    <div class="form-group">
+      <label>Workspace Name</label>
+      <input type="text" id="ws-name" placeholder="e.g., Code, Study, Design">
+    </div>
+    
+    <div class="form-group">
+      <label>Website Links (one URL per line)</label>
+      <textarea id="ws-urls" rows="5" placeholder="https://github.com/&#10;https://stackoverflow.com/"></textarea>
+    </div>
+    
+    <label class="checkbox-container">
+      <input type="checkbox" id="ws-entertainment">
+      <span class="checkmark"></span>
+      Mark as Entertainment (Adds 10s wait timer)
+    </label>
+    
+    <div class="actions">
+      <button id="save-ws-btn" class="primary-btn">Save Workspace</button>
+      <button id="delete-ws-btn" class="danger-btn">Delete Workspace</button>
+    </div>
+  </div>
+
+  <!-- Friction Timer View -->
+  <div id="friction-view" class="view">
+    <div class="friction-container">
+      <div class="hourglass">⏳</div>
+      <h2>Wait a moment...</h2>
+      <p id="timer-text">Launching in 10 seconds</p>
+      <button id="cancel-friction-btn" class="danger-btn">Opt-Out & Work</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
