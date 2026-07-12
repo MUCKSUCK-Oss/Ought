@@ -2,71 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ought - Habit Builder</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
 
-  <!-- Main Menu View -->
   <div id="home-view" class="view active">
-    <div class="header">
+    <header class="header">
       <div class="brand">
+        <span class="logo" role="img" aria-label="rocket">🚀</span>
         <h1>Ought</h1>
       </div>
-      <button id="edit-mode-btn" class="icon-btn" title="Toggle Edit Mode">⚙️</button>
-    </div>
+      <div class="header-actions">
+        <button id="theme-btn" class="icon-btn" aria-label="Toggle Theme" title="Toggle Theme">
+          <span aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </header>
 
-    <button id="add-btn" class="primary-btn">＋ New Workspace</button>
+    <main>
+      <button id="add-btn" class="primary-btn">＋ New Workspace</button>
+      <div id="workspace-list" class="workspace-list"></div>
+    </main>
 
-    <div id="workspace-list" class="workspace-list">
-      <!-- Cards injected by JS -->
-    </div>
-    
-    <!-- Footer (Matching your mockup) -->
-    <div class="footer">
+    <footer class="footer">
       <div class="footer-divider"></div>
-      <p class="footer-text">Launchpad helps you build better habits.</p>
-    </div>
+      <p class="footer-text">Ought helps you build better habits.</p>
+    </footer>
   </div>
 
-  <!-- Edit/Add Workspace View -->
-  <div id="edit-view" class="view">
-    <div class="header">
-      <button id="back-btn" class="icon-btn">←</button>
+  <!-- settings screen, shows up when you tap a workspace or hit new -->
+  <div id="edit-view" class="view" aria-hidden="true">
+    <header class="header">
+      <button id="back-btn" class="icon-btn" aria-label="Go back">←</button>
       <h2>Workspace Settings</h2>
-    </div>
-    
+    </header>
+
     <div class="form-group">
-      <label>Workspace Name</label>
+      <label for="ws-name">Workspace Name</label>
       <input type="text" id="ws-name" placeholder="e.g., Code, Study, Design">
     </div>
-    
+
     <div class="form-group">
-      <label>Website Links (one URL per line)</label>
-      <textarea id="ws-urls" rows="5" placeholder="https://github.com/&#10;https://stackoverflow.com/"></textarea>
+      <label>Website Links</label>
+      <button id="capture-tabs-btn" class="secondary-btn">
+        <span aria-hidden="true">📥</span> Capture Current Open Tabs
+      </button>
+      <div id="url-container" class="url-container"></div>
+      <button id="add-url-btn" class="secondary-btn dashed-btn">＋ Add another link</button>
     </div>
-    
+
     <label class="checkbox-container">
       <input type="checkbox" id="ws-entertainment">
       <span class="checkmark"></span>
       Mark as Entertainment (Adds 10s wait timer)
     </label>
-    
+
     <div class="actions">
       <button id="save-ws-btn" class="primary-btn">Save Workspace</button>
       <button id="delete-ws-btn" class="danger-btn">Delete Workspace</button>
     </div>
   </div>
 
-  <!-- Friction Timer View -->
-  <div id="friction-view" class="view">
+  <!-- friction screen for entertainment workspaces, 10s countdown before it opens -->
+  <div id="friction-view" class="view" aria-hidden="true">
     <div class="friction-container">
-      <div class="hourglass">⏳</div>
-      <h2>Wait a moment...</h2>
+      <div class="hourglass" role="img" aria-label="hourglass">⏳</div>
+      <h2>Hold on.</h2>
+      <p id="quote-text" class="quote">
+        "Say 'no' to distraction so you can say 'yes' to your destiny."
+      </p>
       <p id="timer-text">Launching in 10 seconds</p>
-      <button id="cancel-friction-btn" class="danger-btn">Opt-Out & Work</button>
+      <button id="cancel-friction-btn" class="danger-btn">Actually, I'll work</button>
     </div>
   </div>
 
-  <script src="popup.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>
