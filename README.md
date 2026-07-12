@@ -1,4 +1,4 @@
-# Launchpad — a focus gate for your new tab
+# Ought — a focus gate for your new tab
 
 Replaces Chrome's new tab page with a three-way choice: Study, Code, or Entertainment.
 Study and Code auto-open your saved tabs, plus your last YouTube tutorial, resumed at the exact second you left it.
