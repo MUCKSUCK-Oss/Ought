@@ -1,83 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ought - Habit Builder</title>
-  <link rel="stylesheet" href="popup.css">
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="popup.css" />
 </head>
-<body>
 
-  <div id="home-view" class="view active">
+<body>
+  <main id="home-view" class="view active">
     <header class="header">
       <div class="brand">
-        <span class="logo" role="img" aria-label="rocket">🚀</span>
+        <span class="logo">🚀</span>
         <h1>Ought</h1>
       </div>
-      <div class="header-actions">
-        <button id="theme-btn" class="icon-btn" aria-label="Toggle Theme" title="Toggle Theme">
-          <span aria-hidden="true">🌙</span>
-        </button>
-      </div>
+
+      <button id="theme-btn" class="icon-btn" title="Toggle theme">
+        🌙
+      </button>
     </header>
 
-    <main>
-      <button id="add-btn" class="primary-btn">＋ New Workspace</button>
-      <div id="workspace-list" class="workspace-list"></div>
-    </main>
+    <button id="add-btn" class="primary-btn">
+      ＋ New Workspace
+    </button>
+
+    <div id="workspace-list" class="workspace-list"></div>
 
     <footer class="footer">
       <div class="footer-divider"></div>
-      <p class="footer-text">Ought helps you build better habits.</p>
+      <p>Ought helps you build better habits.</p>
     </footer>
-  </div>
+  </main>
 
-  <!-- settings screen, shows up when you tap a workspace or hit new -->
-  <div id="edit-view" class="view" aria-hidden="true">
+  <main id="edit-view" class="view">
     <header class="header">
-      <button id="back-btn" class="icon-btn" aria-label="Go back">←</button>
+      <button id="back-btn" class="icon-btn">←</button>
       <h2>Workspace Settings</h2>
     </header>
 
     <div class="form-group">
       <label for="ws-name">Workspace Name</label>
-      <input type="text" id="ws-name" placeholder="e.g., Code, Study, Design">
+      <input
+        id="ws-name"
+        type="text"
+        placeholder="e.g. Code, Study, Design"
+      />
     </div>
 
     <div class="form-group">
       <label>Website Links</label>
+
       <button id="capture-tabs-btn" class="secondary-btn">
-        <span aria-hidden="true">📥</span> Capture Current Open Tabs
+        📥 Capture Current Tabs
       </button>
+
       <div id="url-container" class="url-container"></div>
-      <button id="add-url-btn" class="secondary-btn dashed-btn">＋ Add another link</button>
+
+      <button id="add-url-btn" class="secondary-btn dashed-btn">
+        ＋ Add another link
+      </button>
     </div>
 
     <label class="checkbox-container">
-      <input type="checkbox" id="ws-entertainment">
+      <input id="ws-entertainment" type="checkbox" />
       <span class="checkmark"></span>
-      Mark as Entertainment (Adds 10s wait timer)
+      Mark as entertainment (adds a 10-second delay)
     </label>
 
     <div class="actions">
-      <button id="save-ws-btn" class="primary-btn">Save Workspace</button>
-      <button id="delete-ws-btn" class="danger-btn">Delete Workspace</button>
-    </div>
-  </div>
+      <button id="save-ws-btn" class="primary-btn">
+        Save Workspace
+      </button>
 
-  <!-- friction screen for entertainment workspaces, 10s countdown before it opens -->
-  <div id="friction-view" class="view" aria-hidden="true">
+      <button id="delete-ws-btn" class="danger-btn">
+        Delete Workspace
+      </button>
+    </div>
+  </main>
+
+  <main id="friction-view" class="view">
     <div class="friction-container">
-      <div class="hourglass" role="img" aria-label="hourglass">⏳</div>
+      <div class="hourglass">⏳</div>
+
       <h2>Hold on.</h2>
+
       <p id="quote-text" class="quote">
         "Say 'no' to distraction so you can say 'yes' to your destiny."
       </p>
-      <p id="timer-text">Launching in 10 seconds</p>
-      <button id="cancel-friction-btn" class="danger-btn">Actually, I'll work</button>
-    </div>
-  </div>
 
-<script src="popup.js"></script>
+      <p id="timer-text">Launching in 10 seconds</p>
+
+      <button id="cancel-friction-btn" class="danger-btn">
+        Actually, I'll work
+      </button>
+    </div>
+  </main>
+
+  <script src="popup.js"></script>
 </body>
 </html>
