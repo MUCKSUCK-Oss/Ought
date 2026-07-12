@@ -66,7 +66,7 @@ function getDomainString(urls) {
 
 function getIconStyles(name) {
   const lower = name.toLowerCase();
-  if (lower.includes('code')) return { class: 'icon-code', char: '&lt;/&gt;' };
+  if (lower.includes('code')) return { class: 'icon-code', char: '</>' };
   if (lower.includes('study') || lower.includes('read')) return { class: 'icon-study', char: '📚' };
   if (lower.includes('entertain') || lower.includes('game') || lower.includes('play')) return { class: 'icon-entertain', char: '🎮' };
   if (lower.includes('design') || lower.includes('art')) return { class: 'icon-design', char: '🎨' };
@@ -84,20 +84,41 @@ function renderHome() {
     
     const card = document.createElement('div');
     card.className = 'ws-card';
-    card.innerHTML = `
-      <div class="ws-icon ${icon.class}">${icon.char}</div>
-      <div class="ws-content">
-        <div class="ws-title">${ws.name}</div>
-        <div class="ws-sub">${getDomainString(ws.urls)}</div>
-      </div>
-      <div class="ws-badge ${badgeClass}">${badgeText}</div>
-      <button class="edit-card-btn" title="Edit Workspace">✎</button>
-    `;
 
-    
+    const iconEl = document.createElement('div');
+    iconEl.className = `ws-icon ${icon.class}`;
+    iconEl.textContent = icon.char;
+
+    const contentEl = document.createElement('div');
+    contentEl.className = 'ws-content';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'ws-title';
+    titleEl.textContent = ws.name;
+
+    const subEl = document.createElement('div');
+    subEl.className = 'ws-sub';
+    subEl.textContent = getDomainString(ws.urls);
+
+    contentEl.appendChild(titleEl);
+    contentEl.appendChild(subEl);
+
+    const badgeEl = document.createElement('div');
+    badgeEl.className = `ws-badge ${badgeClass}`;
+    badgeEl.textContent = badgeText;
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'edit-card-btn';
+    editBtn.title = 'Edit Workspace';
+    editBtn.textContent = '✎';
+
+    card.appendChild(iconEl);
+    card.appendChild(contentEl);
+    card.appendChild(badgeEl);
+    card.appendChild(editBtn);
+
     card.onclick = () => launchWorkspace(ws);
     
-    const editBtn = card.querySelector('.edit-card-btn');
     editBtn.onclick = (e) => {
       e.stopPropagation(); 
       openEditScreen(index);
@@ -151,12 +172,21 @@ function addUrlInput(value = '') {
   const container = document.getElementById('url-container');
   const row = document.createElement('div');
   row.className = 'url-row';
-  row.innerHTML = `
-    <input type="text" class="url-input" placeholder="https://..." value="${value}">
-    <button class="remove-url-btn" title="Remove Link">✖</button>
-  `;
-  
-  row.querySelector('.remove-url-btn').onclick = () => row.remove();
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'url-input';
+  input.placeholder = 'https://...';
+  input.value = value;
+
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'remove-url-btn';
+  removeBtn.title = 'Remove Link';
+  removeBtn.textContent = '✖';
+  removeBtn.onclick = () => row.remove();
+
+  row.appendChild(input);
+  row.appendChild(removeBtn);
   container.appendChild(row);
 }
 
