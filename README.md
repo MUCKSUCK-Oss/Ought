@@ -1,53 +1,40 @@
 # Ought
 
-Ought is a browser extension for people who lose the first five minutes of every work session to autoplay.
+Ought was built for anyone who sits down at their desk, intends to open GitHub, and somehow winds up watching a 20-minute YouTube video without realizing how they got there. It’s a simple extension aimed at fixing that dangerous five-minute window right when you start working.
 
-## Inspiration
+## The Inspiration
+Friction is the real problem here, not willpower. It takes the exact same amount of effort to open your actual workspace as it does to open a massive distraction. Because of this, the site that loads first usually wins your attention. 
 
-There's a window every time you sit down to work. You mean to open GitHub. Somewhere between typing the URL and it loading, YouTube gets there first. It's not really a willpower thing — opening your real workspace and opening something that'll eat your afternoon take almost exactly the same amount of effort, so whichever one loads faster wins.
+We really didn't want to make another blocker that just guilt-trips you. The goal was simply to make doing the right thing easier than giving into a distraction.
 
-We didn't want another blocker app guilting you into staying on task. We wanted the productive option to just be easier to reach than the distracting one, full stop.
+## How It Works
+*   **One-Click Workspaces:** Throw a bunch of sites into a group and name it "Code" or "Research." Clicking that group opens everything at once, so you aren't manually typing out URLs every morning.
+*   **Instant Capture:** If you don't feel like setting things up from scratch, just get the tabs you want open and click "capture current tabs" to instantly build a workspace on the fly.
+*   **The 10-Second Breather:** This is the part we tweaked the most. If you tag a workspace as "Entertainment," clicking it doesn't immediately load the sites. Instead, it hits you with a 10-second countdown and a quote. You aren't completely blocked from proceeding, but that brief pause is usually enough to snap you off autopilot.
+*   **Privacy First:** All of this lives on your computer. We don't have login screens and we don't sync your data anywhere. Just install and use it.
 
-## What it does
+## How We Built It 
+We kept things super simple: just plain HTML, CSS, and vanilla JavaScript. There are absolutely no frontend frameworks involved, and nothing running on a server. 
 
-Ought lets you save a group of sites as a named workspace, "Code," "Study," whatever, and open all of them with one click instead of typing five URLs in the right order every morning.
+Everything relies on standard WebExtension APIs and `storage.local`. Skipping the cloud database meant the extension loads instantly and works without an internet connection. Since we built this specifically for Firefox, we were able to keep our focus incredibly tight and optimize exactly for that browser's environment.
 
-You don't have to build these from scratch either. Open whatever tabs you actually need, hit "capture current tabs," and it saves that exact set as a workspace on the spot.
+## Challenges Along the Way
+Initially, we tried completely overriding Firefox's default new tab page. That turned out to be a mistake—it just felt like a heavy, bloated web app stuffed into a tab. We switched gears to a much smaller centered popup, which meant tossing out a lot of our CSS and redoing the layout completely. 
 
-The part that took the most iterations is the Entertainment tag. Mark a workspace as Entertainment (YouTube, Netflix, whatever your version is) and clicking it doesn't open it right away. You get a 10-second countdown and a quote first. Nothing's blocked, you can click through, but that ten seconds is usually enough to make you actually think about what you're doing instead of clicking on autopilot.
+The trickiest part technically was the "edit workspace" interface. Letting people dynamically add, remove, and shuffle URLs without a tool like React meant we had to handle a lot of messy manual DOM manipulation and track a bunch of event listeners.
 
-Everything stays on your machine. No login screen, nothing synced out. Install it and go.
+## Running It Locally 
 
-## How we built it
+Because Ought runs strictly on your own hardware, spinning it up locally is super fast:
+1. Clone this repo to your computer.
+2. Open Firefox and type `about:debugging` into your URL bar.
+3. Click on **This Firefox** in the left-hand menu.
+4. Hit the **Load Temporary Add-on...** button and select the `manifest.json` file inside the Ought project folder.
 
-Plain HTML, CSS, and vanilla JS, no framework, nothing running server-side. We stuck to the standard WebExtension APIs instead of Chrome-only ones so it wasn't locked to one browser from day one.
+## AI Acknowledgement
 
-Workspaces get saved through storage.local, so there's no backend to stand up and no login screen to build. The whole thing runs off the tabs API: grab what's currently open, save it, reopen it later with a click.
+We used Large Language Models (ChatGPT and Claude) mostly to brainstorm the big list of quotes that pop up during the 10-second entertainment delay. We also leaned on AI to help debug some of the really annoying event listener issues that popped up while we were writing the raw DOM manipulation code. 
 
-For the UI we went with a small centered popup rather than a full page, with a light/dark toggle and a Work/Entertainment tag on each card.
 
-## Challenges we ran into
-
-First attempt was a full new-tab-page override, replacing Chrome's default tab entirely. It ended up looking like a bloated web app crammed into a browser tab. Not what we wanted. Switching to a compact popup meant rewriting most of the CSS and rethinking the layout from scratch.
-
-The edit-workspace screen was the harder problem: letting someone add, remove, and reorder URL fields on the fly, and prefill that list from whatever tabs they currently have open, without React or any state library underneath it. Mostly manual DOM manipulation and a lot of event listener bookkeeping.
-
-## Accomplishments that we're proud of
-
-Getting a genuinely dynamic UI working in plain JS is the thing we're happiest with. Fields get added, removed, and pulled in from open tabs, all through raw DOM manipulation, and it holds up.
-
-Onboarding is basically instant. No account, nothing syncing in the background. You're using it within a few seconds because there's just local storage sitting behind it.
-
-We're also proud of the 10-second delay. A hard blocker would've been the easier build, but people uninstall those the moment they're annoyed. Making someone sit through a countdown instead of hitting a wall treats them like they can make their own call.
-
-## What we learned
-
-Skipping the backend mattered more than expected. No cloud database, just storage.local, and the extension loads instantly and works offline. Privacy wasn't something we bolted on afterward, it just came for free from never sending data anywhere.
-
-The dynamic URL interface was the real work here. No framework to lean on meant actually thinking through state, event listeners, and re-rendering by hand.
-
-We also ended up caring more about cross-browser support than we planned to. Once we dropped the Chrome-specific naming and stuck to standard WebExtension APIs, it started working across Firefox, Brave, and Edge without extra effort.
-
-## What's next for Ought
-
-A couple things we didn't get to: scaling the countdown automatically based on how close your next deadline is, and for Work workspaces, remembering the exact timestamp on a paused tutorial video so it picks up where you left off instead of restarting.
+## What’s Next
+There are a few ideas we haven't gotten around to yet. We really want to make the countdown timer scale dynamically depending on how close an upcoming deadline is. For "Work" spaces, it'd also be great to save the exact timestamp of a paused YouTube tutorial so it resumes exactly where you left off.
