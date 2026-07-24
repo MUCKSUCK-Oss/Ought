@@ -37,9 +37,15 @@ If you want to try it yourself:
 
 Open Firefox and go to about:debugging. ## Click This Firefox. ## Click Load Temporary Add-on… and select manifest.json.
 
-## AI note
+## 🤖 AI Usage Disclosure
 
-I used ChatGPT and Claude a bit for brainstorming quotes for the delay screen and for helping debug some annoying event listener issues.
+In the spirit of transparency, here is a breakdown of how artificial intelligence was utilized during the development of Ought:
+
+    Core Architecture & Logic: The core concept, strictly local data architecture, privacy-first philosophy, and overall project structure were entirely human-designed.
+
+    CSS & Styling: We leveraged AI to significantly accelerate our UI development. AI assisted in generating the foundational CSS, specifically for implementing the seamless Light/Dark mode themes, structuring flexbox layouts, and achieving the polished, modern aesthetic of the extension popup.
+
+    JavaScript Assistance: AI was used as a pair-programming partner to help write and optimize specific Vanilla JavaScript functions, particularly around complex DOM manipulation (like generating dynamic URL inputs) and debugging event listeners.
 
 ## What’s next
 
